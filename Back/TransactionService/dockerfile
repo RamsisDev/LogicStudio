@@ -1,0 +1,23 @@
+# ---------- base/runtime ----------
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS base
+WORKDIR /app
+ENV ASPNETCORE_URLS=http://+:5152
+EXPOSE 5152
+
+# ---------- build ----------
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+WORKDIR /src
+
+# Copia el csproj (ajusta la ruta si tu .csproj está en otra carpeta)
+COPY ["TransactionService.csproj", "./"]
+RUN dotnet restore "TransactionService.csproj"
+
+# Copia el resto del código
+COPY . .
+RUN dotnet publish "TransactionService.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# ---------- final ----------
+FROM base AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "TransactionService.dll"]
