@@ -5,7 +5,6 @@
 
 <nz-card class="mb-4">
 
-  <!-- 1 · Buscador: ocupa 100 % (24 columnas) -->
   <form nz-form nzLayout="vertical">
     <nz-row nzGutter="16">
       <nz-col nzSpan="24">
@@ -19,7 +18,6 @@
       </nz-col>
     </nz-row>
 
-    <!-- 2 · Categoría + Fecha (12 + 12) -->
     <nz-row nzGutter="16" class="mt-2">
       <nz-col nzSpan="12">
         <nz-select nzPlaceHolder="Todas las categorías"
@@ -41,7 +39,6 @@
       </nz-col>
     </nz-row>
 
-    <!-- 3 · Slider: 12 columnas (la mitad) -->
     <nz-row nzGutter="16" class="mt-2">
       <nz-col nzSpan="12">
         <nz-slider
@@ -78,8 +75,6 @@
 
 </nz-card>
 
-
-<!-- Tabla ------------------------------------------------------------->
 <nz-table
   #basicTable
   [nzData]="data"
@@ -97,7 +92,7 @@
     <th>Descripción</th>
     <th>Precio</th>
     <th>Stock</th>
-    <th style="width:120px">Acciones</th>          <!-- ← nueva columna -->
+    <th style="width:120px">Acciones</th>
   </tr>
 </thead>
 
@@ -109,7 +104,6 @@
     <td>{{ item.precio | currency:'USD':'symbol':'1.2-2' }}</td>
     <td>{{ item.stock }}</td>
 
-    <!-- Acciones ------------------------------------------------------>
     <td class="text-center">
       <button nz-button nzType="link"
               nzTooltip="Editar"
