@@ -1,0 +1,130 @@
+
+
+<h1>Productos</h1>
+
+
+<nz-card class="mb-4">
+
+  <!-- 1 · Buscador: ocupa 100 % (24 columnas) -->
+  <form nz-form nzLayout="vertical">
+    <nz-row nzGutter="16">
+      <nz-col nzSpan="24">
+        <nz-input-group nzSuffixIcon="search">
+          <input nz-input
+                 placeholder="Nombre del producto"
+                 [(ngModel)]="filtro.nombre"
+                 (keyup.enter)="aplicarFiltros()"
+                 name="nombre" />
+        </nz-input-group>
+      </nz-col>
+    </nz-row>
+
+    <!-- 2 · Categoría + Fecha (12 + 12) -->
+    <nz-row nzGutter="16" class="mt-2">
+      <nz-col nzSpan="12">
+        <nz-select nzPlaceHolder="Todas las categorías"
+                   nzAllowClear
+                   [(ngModel)]="filtro.categoriaId"
+                   name="categoria">
+          <nz-option *ngFor="let cat of categorias"
+                     [nzValue]="cat.id"
+                     [nzLabel]="cat.nombre">
+          </nz-option>
+        </nz-select>
+      </nz-col>
+
+      <nz-col nzSpan="12">
+        <nz-date-picker nzPlaceHolder="Fecha"
+                        [(ngModel)]="filtro.fecha"
+                        name="fecha">
+        </nz-date-picker>
+      </nz-col>
+    </nz-row>
+
+    <!-- 3 · Slider: 12 columnas (la mitad) -->
+    <nz-row nzGutter="16" class="mt-2">
+      <nz-col nzSpan="12">
+        <nz-slider
+          nzRange
+          [nzMin]="0"
+          [nzMax]="10000"
+          [(ngModel)]="precioRange"
+          (ngModelChange)="onPrecioRangeChange($event)"
+          name="precio">
+        </nz-slider>
+      </nz-col>
+    </nz-row>
+
+    <nz-row nzJustify="start" class="mt-2">
+      <nz-col>
+        <button nz-button nzType="primary" nzShape="round" nzGhost
+                (click)="crearProducto()">
+          <span nz-icon nzType="plus"></span> Crear
+        </button>
+      </nz-col>
+
+      <nz-col class="ml-2">
+        <button nz-button nzType="default" (click)="loadData()">
+          <span nz-icon nzType="filter"></span> Filtrar
+        </button>
+      </nz-col>
+      <nz-col nzJustify="end" class="ml-2">
+        <button nz-button nzType="default" (click)="resetFiltros()">
+          <span nz-icon nzType="reload"></span> Reset
+        </button>
+      </nz-col>
+    </nz-row>
+  </form>
+
+</nz-card>
+
+
+<!-- Tabla ------------------------------------------------------------->
+<nz-table
+  #basicTable
+  [nzData]="data"
+  [nzFrontPagination]="false"
+  [nzTotal]="total"
+  [nzPageSize]="pageSize"
+  [nzPageIndex]="pageIndex"
+  [nzLoading]="loading"
+  (nzQueryParams)="onQueryParamsChange($event)">
+
+  <thead>
+  <tr>
+    <th>Id</th>
+    <th>Nombre</th>
+    <th>Descripción</th>
+    <th>Precio</th>
+    <th>Stock</th>
+    <th style="width:120px">Acciones</th>          <!-- ← nueva columna -->
+  </tr>
+</thead>
+
+<tbody>
+  <tr *ngFor="let item of basicTable.data">
+    <td>{{ item.id }}</td>
+    <td>{{ item.nombre }}</td>
+    <td>{{ item.descripcion }}</td>
+    <td>{{ item.precio | currency:'USD':'symbol':'1.2-2' }}</td>
+    <td>{{ item.stock }}</td>
+
+    <!-- Acciones ------------------------------------------------------>
+    <td class="text-center">
+      <button nz-button nzType="link"
+              nzTooltip="Editar"
+              (click)="editarProducto(item.id)">
+        <span nz-icon nzType="edit"></span>
+        <small>Editar</small>
+      </button>
+
+      <button nz-button nzType="link" nzDanger
+              nzTooltip="Eliminar"
+              (click)="eliminarProducto(item.id)">
+        <span nz-icon nzType="delete"></span>
+        <small>Eliminar</small>
+      </button>
+    </td>
+  </tr>
+</tbody>
+</nz-table>
