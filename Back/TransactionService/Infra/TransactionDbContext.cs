@@ -18,7 +18,7 @@ namespace TransactionService.Infra
             // ----- Transaccion -----
             b.Entity<Transaccion>(cfg =>
             {
-                cfg.ToTable("Transacciones");
+                cfg.ToTable("TRANSACCIONES");
                 cfg.HasKey(t => t.Id);
 
                 cfg.Property(t => t.Fecha)

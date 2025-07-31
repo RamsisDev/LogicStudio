@@ -1,83 +1,89 @@
 
-DROP DATABASE IF EXISTS inventorydb;
-CREATE DATABASE inventorydb
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-USE inventorydb;
+IF DB_ID('INVENTORYDB') IS NOT NULL
+BEGIN
+    ALTER DATABASE INVENTORYDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE INVENTORYDB;
+END
+GO
 
+CREATE DATABASE INVENTORYDB;
+GO
 
-CREATE TABLE categorias (
-    id           INT AUTO_INCREMENT PRIMARY KEY,
-    nombre       VARCHAR(50)  NOT NULL,
-    descripcion  VARCHAR(250)
+USE INVENTORYDB;
+GO
+
+CREATE TABLE CATEGORIAS (
+    ID          INT IDENTITY(1,1) PRIMARY KEY,
+    NOMBRE      NVARCHAR(50)  NOT NULL,
+    DESCRIPCION NVARCHAR(250)
 );
+GO
 
-
-CREATE TABLE productos (
-    id           INT AUTO_INCREMENT PRIMARY KEY,
-    nombre       VARCHAR(100) NOT NULL,
-    descripcion  VARCHAR(500),
-    precio       DECIMAL(18,2) NOT NULL,
-    stock        INT NOT NULL
+CREATE TABLE PRODUCTOS (
+    ID          INT IDENTITY(1,1) PRIMARY KEY,
+    NOMBRE      NVARCHAR(100) NOT NULL,
+    DESCRIPCION NVARCHAR(500),
+    PRECIO      DECIMAL(18,2) NOT NULL,
+    STOCK       INT NOT NULL
 );
+GO
 
-CREATE TABLE producto_categoria (
-    id            INT AUTO_INCREMENT PRIMARY KEY,
-    producto_id   INT NOT NULL,
-    categoria_id  INT NOT NULL,
-    CONSTRAINT uq_prodcat UNIQUE (producto_id, categoria_id),
-    CONSTRAINT fk_prodcat_producto
-        FOREIGN KEY (producto_id)  REFERENCES productos  (id) ON DELETE CASCADE,
-    CONSTRAINT fk_prodcat_categoria
-        FOREIGN KEY (categoria_id) REFERENCES categorias (id) ON DELETE CASCADE
+CREATE TABLE PRODUCTO_CATEGORIA (
+    ID           INT IDENTITY(1,1) PRIMARY KEY,
+    PRODUCTO_ID  INT NOT NULL,
+    CATEGORIA_ID INT NOT NULL,
+    CONSTRAINT UQ_PRODCAT UNIQUE (PRODUCTO_ID, CATEGORIA_ID),
+    CONSTRAINT FK_PRODCAT_PRODUCTO  FOREIGN KEY (PRODUCTO_ID)  REFERENCES PRODUCTOS (ID) ON DELETE CASCADE,
+    CONSTRAINT FK_PRODCAT_CATEGORIA FOREIGN KEY (CATEGORIA_ID) REFERENCES CATEGORIAS(ID) ON DELETE CASCADE
 );
+GO
 
-CREATE TABLE transacciones (
-    id               INT AUTO_INCREMENT PRIMARY KEY,
-    fecha            DATETIME(6)   NOT NULL,
-    tipo_transaccion VARCHAR(50)   NOT NULL,   -- COMPRA / VENTA
-    detalle          LONGTEXT
+CREATE TABLE TRANSACCIONES (
+    ID                INT IDENTITY(1,1) PRIMARY KEY,
+    FECHA             DATETIME2(6)  NOT NULL,
+    TIPO_TRANSACCION  NVARCHAR(50)  NOT NULL,
+    DETALLE           NVARCHAR(MAX)
 );
+GO
 
-CREATE TABLE transaccion_productos (
-    id              INT AUTO_INCREMENT PRIMARY KEY,
-    transaccion_id  INT NOT NULL,
-    producto_id     INT NOT NULL,
-    cantidad        INT NOT NULL,
-    precio_unitario DECIMAL(18,2) NOT NULL,
-    precio_total    DECIMAL(18,2) NOT NULL,
-    CONSTRAINT fk_txprod_transaccion
-        FOREIGN KEY (transaccion_id) REFERENCES transacciones (id) ON DELETE CASCADE,
-    CONSTRAINT fk_txprod_producto
-        FOREIGN KEY (producto_id)    REFERENCES productos     (id) ON DELETE CASCADE
+CREATE TABLE TRANSACCION_PRODUCTOS (
+    ID              INT IDENTITY(1,1) PRIMARY KEY,
+    TRANSACCION_ID  INT NOT NULL,
+    PRODUCTO_ID     INT NOT NULL,
+    CANTIDAD        INT NOT NULL,
+    PRECIO_UNITARIO DECIMAL(18,2) NOT NULL,
+    PRECIO_TOTAL    DECIMAL(18,2) NOT NULL,
+    CONSTRAINT FK_TXPROD_TRANSACCION FOREIGN KEY (TRANSACCION_ID) REFERENCES TRANSACCIONES(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_TXPROD_PRODUCTO    FOREIGN KEY (PRODUCTO_ID)    REFERENCES PRODUCTOS(ID)     ON DELETE CASCADE
 );
+GO
 
-INSERT INTO categorias (nombre)
+INSERT INTO CATEGORIAS (NOMBRE)
 VALUES ('Electrónica'), ('Accesorios');
+GO
 
-INSERT INTO productos (nombre, descripcion, precio, stock) VALUES
+INSERT INTO PRODUCTOS (NOMBRE, DESCRIPCION, PRECIO, STOCK) VALUES
 ('Laptop',  '14-inch 16 GB RAM', 799.99,  50),
 ('Mouse',   'Ergonómico USB',     19.90, 150),
 ('Teclado', 'Mecánico',           29.90, 120);
+GO
 
-INSERT INTO producto_categoria (producto_id, categoria_id) VALUES
+INSERT INTO PRODUCTO_CATEGORIA (PRODUCTO_ID, CATEGORIA_ID) VALUES
 (1, 1),
 (2, 1),
 (2, 2),
 (3, 1),
 (3, 2);
+GO
 
-INSERT INTO transacciones (fecha, tipo_transaccion, detalle)
-VALUES (NOW(6), 'VENTA', 'Venta web #1001');
-SET @TxId := LAST_INSERT_ID();
+INSERT INTO TRANSACCIONES (FECHA, TIPO_TRANSACCION, DETALLE)
+VALUES (GETDATE(), 'VENTA', 'Venta web #1001');
+GO
 
-INSERT INTO transaccion_productos
-        (transaccion_id, producto_id, cantidad, precio_unitario, precio_total)
+DECLARE @TxId INT = SCOPE_IDENTITY();
+
+INSERT INTO TRANSACCION_PRODUCTOS
+        (TRANSACCION_ID, PRODUCTO_ID, CANTIDAD, PRECIO_UNITARIO, PRECIO_TOTAL)
 VALUES  (@TxId, 1, 1, 799.99, 799.99),  
         (@TxId, 2, 2,  19.90,  39.80);
-        
-        
-        
-        
-        
-/*/conectar a la db con el urser local
+GO

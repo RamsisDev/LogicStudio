@@ -8,8 +8,11 @@ namespace ProductService.Entities
     public class ProductoCategoria
     {
         [Key]
-        public int Id { get; set; }        
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+        [JsonPropertyName("productoId")]
         public int ProductoId { get; set; }
+        [JsonPropertyName("categoriaId")]
         public int CategoriaId { get; set; }
     }
 }

@@ -51,6 +51,13 @@ namespace ProductService.Controllers
 
             return product is null ? NotFound() : Ok(product);
         }
+        [HttpGet("/Categorias")]
+        public async Task<ActionResult<Categoria[]>> GetCategorias()
+        {
+            var Categorias = db.Categories.ToList();
+
+            return Categorias is null ? NotFound() : Ok(Categorias);
+        }
 
         // --------------------------------------------------------------------
         // POST /Producto
