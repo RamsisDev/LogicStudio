@@ -1,18 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using ProductService.Infra;
 
+
 var builder = WebApplication.CreateBuilder(args);
-var cfg = builder.Configuration;
 
-// Nombre de tu base de datos en SQL Server:
-var dbName = "INVENTORYDB";
+var connectionString =
+    "Host=dpg-d291a61r0fns73eujr2g-a.oregon-postgres.render.com;" +
+    "Port=5432;" +
+    "Database=testdb_82sy;" +
+    "Username=testdb_82sy_user;" +
+    "Password=6GJ5Zqxca0a39QT1UXuD6jwBJuEEoB0p;" +
+    "Ssl Mode=Require;" +
+    "Trust Server Certificate=true"
 
-// Construye el connection string para SQL Server con autenticación de Windows
-var connectionString = $"Server=localhost;Database={dbName};Trusted_Connection=True;TrustServerCertificate=True;";
-
-// Agrega el DbContext
+// —— DbContext —— 
 builder.Services.AddDbContext<ProductDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseNpgsql(connectionString));
 
 // Add services to the container.
 builder.Services.AddCors(options =>

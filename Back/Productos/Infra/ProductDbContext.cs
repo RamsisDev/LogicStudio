@@ -6,8 +6,7 @@ namespace ProductService.Infra
 
     public class ProductDbContext : DbContext
     {
-        public ProductDbContext(DbContextOptions<ProductDbContext> options)
-            : base(options) { }
+        public ProductDbContext(DbContextOptions<ProductDbContext> options): base(options) { }
 
         // ---------- DbSets ----------
         public DbSet<Product> Products => Set<Product>();
@@ -16,55 +15,40 @@ namespace ProductService.Infra
 
         protected override void OnModelCreating(ModelBuilder b)
         {
-            // ----- Categoria -----
             b.Entity<Categoria>(cfg =>
             {
                 cfg.ToTable("CATEGORIAS");
                 cfg.HasKey(c => c.Id);
 
-                cfg.Property(c => c.Nombre)
-                   .HasMaxLength(50)
-                   .IsRequired();
-
-                cfg.Property(c => c.Descripcion)
-                   .HasMaxLength(250);
+                cfg.Property(c => c.Id).HasColumnName("ID");
+                cfg.Property(c => c.Nombre).HasColumnName("NOMBRE").HasMaxLength(50).IsRequired();
+                cfg.Property(c => c.Descripcion).HasColumnName("DESCRIPCION").HasMaxLength(250);
             });
 
-            // ----- Product -----
+
             b.Entity<Product>(cfg =>
             {
                 cfg.ToTable("PRODUCTOS");
                 cfg.HasKey(p => p.Id);
 
-                cfg.Property(p => p.Nombre)
-                   .HasMaxLength(100)
-                   .IsRequired();
-
-                cfg.Property(p => p.Descripcion)
-                   .HasMaxLength(500);
-
-                cfg.Property(p => p.Precio)
-                   .HasColumnType("decimal(18,2)")
-                   .IsRequired();
-
-                cfg.Property(p => p.Stock)
-                   .IsRequired();
+                cfg.Property(p => p.Id).HasColumnName("ID");
+                cfg.Property(p => p.Nombre).HasColumnName("NOMBRE").HasMaxLength(100).IsRequired();
+                cfg.Property(p => p.Descripcion).HasColumnName("DESCRIPCION").HasMaxLength(500);
+                cfg.Property(p => p.Precio).HasColumnName("PRECIO").HasColumnType("numeric(18,2)").IsRequired();
+                cfg.Property(p => p.Stock).HasColumnName("STOCK").IsRequired();
             });
 
-            // ----- ProductoCategoria (tabla puente M-N) -----
+
             b.Entity<ProductoCategoria>(cfg =>
             {
                 cfg.ToTable("PRODUCTOCATEGORIA");
+                cfg.HasKey(pc => pc.Id);
 
-                cfg.HasKey(pc => pc.Id);  
-                cfg.HasIndex(pc => new { pc.ProductoId, pc.CategoriaId })
-                   .IsUnique();         
+                cfg.Property(pc => pc.Id).HasColumnName("ID");
+                cfg.Property(pc => pc.ProductoId).HasColumnName("PRODUCTO_ID").IsRequired();
+                cfg.Property(pc => pc.CategoriaId).HasColumnName("CATEGORIA_ID").IsRequired();
 
-                cfg.Property(pc => pc.ProductoId)
-                   .IsRequired();
-
-                cfg.Property(pc => pc.CategoriaId)
-                   .IsRequired();
+                cfg.HasIndex(pc => new { pc.ProductoId, pc.CategoriaId }).IsUnique();
 
                 cfg.HasOne<Product>()
                    .WithMany()
@@ -76,7 +60,6 @@ namespace ProductService.Infra
                    .HasForeignKey(pc => pc.CategoriaId)
                    .OnDelete(DeleteBehavior.Cascade);
             });
-
             base.OnModelCreating(b);
         }
     }
