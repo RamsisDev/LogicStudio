@@ -95,7 +95,26 @@ namespace ProductService.Controllers
                 return Conflict("Conflicto de concurrencia.");
             }
 
-            return NoContent();
+            return Ok();
+        }
+
+        [HttpPut("/ModificarStock/{idProducto}/{NuevoStock}")]
+        public async Task<IActionResult> ActualizarStock(int idProducto, int NuevoStock)
+        {
+            
+            var product = await db.Products
+                                  .AsNoTracking()
+                                  .FirstOrDefaultAsync(p => p.Id == idProducto);
+            if (product is null)
+                return NotFound();     
+
+            if (NuevoStock > product.Stock && product.Stock != 0)
+                return BadRequest("La cantidad supera la cantidad actual"); 
+
+            product.Stock = NuevoStock;
+            db.Entry(product).State = EntityState.Modified;
+            await db.SaveChangesAsync();
+            return Ok();
         }
 
         // --------------------------------------------------------------------
@@ -110,7 +129,7 @@ namespace ProductService.Controllers
             db.Products.Remove(product);
             await db.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
     }
 }

@@ -21,29 +21,15 @@ namespace TransactionService.Infra
                 cfg.ToTable("TRANSACCIONES");
                 cfg.HasKey(t => t.Id);
 
-                cfg.Property(t => t.Fecha)
-                   .IsRequired();
+                cfg.Property(t => t.Id).HasColumnName("ID");
+                cfg.Property(t => t.Fecha).HasColumnName("FECHA").IsRequired();
+                cfg.Property(t => t.TipoTransaccion).HasColumnName("TIPO_TRANSACCION").HasMaxLength(50).IsRequired();
+                cfg.Property(t => t.Detalle).HasColumnName("DETALLE").HasMaxLength(1000);
 
-                cfg.Property(t => t.TipoTransaccion)
-                   .HasMaxLength(500)
-                   .IsRequired();
-
-                cfg.Property(t => t.ProductoId)
-                   .IsRequired();
-
-                cfg.Property(t => t.Cantidad)
-                   .IsRequired();
-
-                cfg.Property(t => t.PrecioUnitario)
-                   .HasColumnType("decimal(18,2)")
-                   .IsRequired();
-
-                cfg.Property(t => t.PrecioTotal)
-                   .HasColumnType("decimal(18,2)")
-                   .IsRequired();
-
-                cfg.Property(t => t.Detalle)
-                   .HasMaxLength(1000);    // opcional, ajusta si necesitas más
+                cfg.Property(t => t.ProductoId).HasColumnName("PRODUCTO_ID").IsRequired();
+                cfg.Property(t => t.Cantidad).HasColumnName("CANTIDAD").IsRequired();
+                cfg.Property(t => t.PrecioUnitario).HasColumnName("PRECIO_UNITARIO").HasColumnType("numeric(18,2)").IsRequired();
+                cfg.Property(t => t.PrecioTotal).HasColumnName("PRECIO_TOTAL").HasColumnType("numeric(18,2)").IsRequired();
             });
 
             base.OnModelCreating(b);
