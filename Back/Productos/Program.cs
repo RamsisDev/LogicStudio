@@ -11,7 +11,7 @@ var connectionString =
     "Username=testdb_82sy_user;" +
     "Password=6GJ5Zqxca0a39QT1UXuD6jwBJuEEoB0p;" +
     "Ssl Mode=Require;" +
-    "Trust Server Certificate=true"
+    "Trust Server Certificate=true";
 
 // —— DbContext —— 
 builder.Services.AddDbContext<ProductDbContext>(options =>
