@@ -67,7 +67,6 @@ export class ProductosComponent {
   precioRange: [number, number] = [0, 100000];
   filtro: Filtro = { precioMin: 0, precioMax: 99999 };
 
-  /* ----------------------- ctor / init -----------------------------*/
   constructor(
     private api: ProductosApiService,
     private msg: NzMessageService,
@@ -83,7 +82,6 @@ export class ProductosComponent {
     this.loadData();
   }
 
-  /* ----------------------- CRUD ------------------------------------*/
   loadData(): void {
     this.loading  = true;
     this.hasError = false;
@@ -104,12 +102,12 @@ export class ProductosComponent {
       });
   }
 
- editarProducto(id: number): void {
-  const producto = this.data.find(p => p.id === id);
-  if (!producto) {
-    this.msg.error('Producto no encontrado');
-    return;
-  }
+  editarProducto(id: number): void {
+    const producto = this.data.find(p => p.id === id);
+    if (!producto) {
+      this.msg.error('Producto no encontrado');
+      return;
+    }
 
   const modalRef = this.modal.create({
     nzTitle: `Modificar producto #${producto.id}`,
@@ -185,7 +183,6 @@ export class ProductosComponent {
 }
 
 
-  /* ----------------------- eventos UI ------------------------------*/
   onQueryParamsChange({ pageIndex, pageSize }: NzTableQueryParams): void {
     this.pageIndex = pageIndex;
     this.pageSize  = pageSize;

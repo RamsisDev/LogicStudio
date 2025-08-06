@@ -108,9 +108,6 @@ namespace ProductService.Controllers
             if (product is null)
                 return NotFound();     
 
-            if (NuevoStock > product.Stock && product.Stock != 0)
-                return BadRequest("La cantidad supera la cantidad actual"); 
-
             product.Stock = NuevoStock;
             db.Entry(product).State = EntityState.Modified;
             await db.SaveChangesAsync();

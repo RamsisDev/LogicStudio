@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  productos-service:
+    build:
+      context: ./Back/Productos
+      dockerfile: Dockerfile
+    container_name: productosService
+    ports:
+      - "5015:5015"
+    networks:
+      - backnet
+
+  transaction-service:
+    build:
+      context: ./Back/TransactionService
+      dockerfile: Dockerfile
+    container_name: transactionservice
+    ports:
+      - "5152:5152"
+    depends_on:
+      - productos-service
+    environment:
+      PRODUCTOS_BASE_URL: "http://productos-service:5015"
+    networks:
+      - backnet
+
+  front:
+    build:
+      context: ./Front/Inventario
+      dockerfile: Dockerfile
+    container_name: angularFront
+    ports:
+      - "4200:4200"
+    depends_on:
+      - productos-service
+      - transaction-service
+    networks:
+      - backnet
+
+networks:
+  backnet:
+    driver: bridge

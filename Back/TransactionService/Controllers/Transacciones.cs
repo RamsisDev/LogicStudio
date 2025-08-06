@@ -64,14 +64,28 @@ namespace TransactionService.Controllers
             if (stockActual is null)
                 return NotFound($"Producto {dto.ProductoId} no existe en el servicio de Productos.");
 
-            if (dto.Cantidad > stockActual.Value)
-                return BadRequest("Error: la cantidad a transaccionar es mayor a la que existe.");
+            if (dto.Cantidad <= 0)
+                return BadRequest("La cantidad debe ser mayor que cero.");
 
-            var ok = _producto.ActualizarStockSync(
-                         dto.ProductoId,
-                         stockActual.Value - dto.Cantidad);
+            int nuevoStock;
+            switch (dto.TipoTransaccion?.ToUpperInvariant())
+            {
+                case "VENTA":
+                    if (dto.Cantidad > stockActual.Value)
+                        return BadRequest("Error: la cantidad a transaccionar es mayor a la que existe.");
+                    nuevoStock = stockActual.Value - dto.Cantidad;
+                    break;
 
-            if (!ok)
+                case "COMPRA":
+                    nuevoStock = stockActual.Value + dto.Cantidad;
+                    break;
+
+                default:
+                    return BadRequest($"Tipo de transacción inválido: {dto.TipoTransaccion}");
+            }
+
+            var actualizado = _producto.ActualizarStockSync(dto.ProductoId, nuevoStock);
+            if (!actualizado)
                 return StatusCode(502, "Error al actualizar stock en el servicio de Productos.");
 
             _db.Transacciones.Add(dto);

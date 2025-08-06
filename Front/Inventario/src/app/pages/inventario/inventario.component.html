@@ -1,0 +1,105 @@
+<h1>Transacciones</h1>
+
+<!-- FILTROS / BARRA SUPERIOR -->
+<nz-card class="mb-4">
+  <form nz-form nzLayout="vertical">
+    <nz-row nzGutter="16" class="mb-2">
+      <!-- FILTRO “Tipo de movimiento” -->
+      <nz-col nzSpan="12">
+        <nz-select
+          nzPlaceHolder="Todos los tipos"
+          nzAllowClear
+          [(ngModel)]="filtro.tipoTransaccion"
+          name="tipo">
+          <nz-option *ngFor="let t of tipos"
+                     [nzValue]="t"
+                     [nzLabel]="t">
+          </nz-option>
+        </nz-select>
+      </nz-col>
+
+      <!-- FILTRO “Fecha” -->
+      <nz-col nzSpan="12">
+        <nz-date-picker
+          nzPlaceHolder="Fecha"
+          [(ngModel)]="filtro.fecha"
+          name="fecha">
+        </nz-date-picker>
+      </nz-col>
+    </nz-row>
+
+    <nz-row nzGutter="16">
+      <nz-col>
+        <button nz-button nzType="primary" nzShape="round"
+                (click)="nuevaTransaccion()">
+          <span nz-icon nzType="plus"></span>
+          Nueva transacción
+        </button>
+      </nz-col>
+
+      <nz-col>
+        <button nz-button nzType="default"
+                (click)="aplicarFiltros()">
+          <span nz-icon nzType="filter"></span>
+          Filtrar
+        </button>
+      </nz-col>
+
+      <nz-col>
+        <button nz-button nzType="default"
+                (click)="resetFiltros()">
+          <span nz-icon nzType="reload"></span>
+          Reset
+        </button>
+      </nz-col>
+    </nz-row>
+  </form>
+</nz-card>
+
+<!-- TABLA -->
+<nz-table
+  #txTable
+  [nzData]="dataFiltrada"
+  [nzFrontPagination]="false">
+
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Producto Id</th>
+      <th>Fecha</th>
+      <th>Tipo</th>
+      <th>Cantidad</th>
+      <th>Precio U.</th>
+      <th>Total</th>
+      <th style="width:120px">Acciones</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let tx of txTable.data">
+      <td>{{ tx.id }}</td>
+      <td>{{ tx.productoId }}</td>
+      <td>{{ tx.fecha | date:'yyyy-MM-dd' }}</td>
+      <td>{{ tx.tipoTransaccion }}</td>
+      <td>{{ tx.Cantidad }}</td>
+      <td>{{ tx.precioUnitario | currency }}</td>
+      <td>{{ tx.precioTotal   | currency }}</td>
+
+      <td class="text-center">
+        <button nz-button nzType="link"
+                nzTooltip="Editar"
+                (click)="editar(tx.id)">
+          <span nz-icon nzType="edit"></span>
+          <small>Editar</small>
+        </button>
+
+        <button nz-button nzType="link" nzDanger
+                nzTooltip="Eliminar"
+                (click)="eliminar(tx.id)">
+          <span nz-icon nzType="delete"></span>
+          <small>Eliminar</small>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

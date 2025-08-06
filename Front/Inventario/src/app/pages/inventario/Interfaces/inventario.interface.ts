@@ -14,5 +14,5 @@ export interface Transaccion {
 
   detalle?: string;
 
-  cantidad: number;
+  Cantidad: number;
 }

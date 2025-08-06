@@ -1,1 +1,60 @@
-<p>modificar works!</p>
+<nz-form [formGroup]="form" nzLayout="vertical">
+  <nz-form-item>
+    <nz-form-label>Producto</nz-form-label>
+    <nz-form-control>
+      <nz-select formControlName="productoId" nzDisabled>
+        <nz-option *ngFor="let p of productos"
+          [nzValue]="p.id"
+          [nzLabel]="p.nombre">
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Tipo de movimiento</nz-form-label>
+    <nz-form-control>
+      <nz-select formControlName="tipoTransaccion" nzDisabled>
+        <nz-option *ngFor="let t of tipos"
+          [nzValue]="t"
+          [nzLabel]="t">
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Cantidad</nz-form-label>
+    <nz-form-control nzErrorTip="Mínimo 1.">
+      <input nz-input type="number" formControlName="cantidad" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Precio unitario</nz-form-label>
+    <nz-form-control nzErrorTip="Debe ser ≥ 0.">
+      <input nz-input type="number" formControlName="precioUnitario" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Total</nz-form-label>
+    <nz-form-control>
+      <input nz-input formControlName="precioTotal" nzDisabled />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Detalle</nz-form-label>
+    <nz-form-control>
+      <textarea nz-input rows="2" formControlName="detalle"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+
+  <div class="text-right mt-4">
+    <button nz-button nzType="default" (click)="cancel()">Cancelar</button>
+    <button nz-button nzType="primary"
+            [disabled]="form.invalid || guardando"
+            (click)="save()">Guardar</button>
+  </div>
+</nz-form>
